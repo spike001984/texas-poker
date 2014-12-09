@@ -88,7 +88,7 @@ public class Game {
 	}
 	
 	public void start() {
-		while(isEnd){
+		while(!isEnd){
 			state.action();
 		}
 	}

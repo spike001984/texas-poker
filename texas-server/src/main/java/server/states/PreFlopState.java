@@ -1,6 +1,5 @@
 package server.states;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -27,9 +26,6 @@ public class PreFlopState extends BaseState{
 		this.betChip = betChip;
 	}
 
-
-
-
 	@Override
 	public void next() {
 		// TODO Auto-generated method stub
@@ -40,18 +36,15 @@ public class PreFlopState extends BaseState{
 		}
 	}
 
-
 	@Override
 	public void action() {
 		// TODO Auto-generated method stub
-		List playerList = this.game.getPlayerList();
-		int smBlindIndex = game.getSmBlind();
-		for(int i = (smBlindIndex+2)%playerList.size(); !game.isOnlyOneAlive()&&!game.isAllCall(); i=(i+1)%playerList.size()){
+		@SuppressWarnings("unchecked")
+		List<Player> playerList = this.game.getPlayerList();
+		for(int i = 0; i < playerList.size(); i++){
 			Player player = (Player) playerList.get(i);
-			BufferedReader br = null;
 			PrintWriter pw = null;
 			try {
-				br = IOHelper.getReader(player.getSocket());
 				pw = IOHelper.getWriter(player.getSocket());
 				MassageSender.init(pw, player.getChip());
 			} catch (IOException e) {
