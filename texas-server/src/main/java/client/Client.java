@@ -33,13 +33,17 @@ public class Client {
 			PrintWriter pw = getWriter(socket);
 			BufferedReader localBr = new BufferedReader(new InputStreamReader(System.in));
 			String msg = null;
-			while((msg = localBr.readLine())!=null){
-				pw.println(msg);
-				System.out.println(br.readLine());
-				
-				if(msg.equals("bye"))
-					break;				
-			}
+			
+			System.out.println(br.readLine());
+			System.out.println(br.readLine());
+			
+//			while((msg = localBr.readLine())!=null){
+//				pw.println(msg);
+//				System.out.println(br.readLine());
+//				
+//				if(msg.equals("bye"))
+//					break;				
+//			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		}finally{
