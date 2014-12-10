@@ -1,6 +1,8 @@
 package server;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
 	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL"};
@@ -10,12 +12,15 @@ public class Player {
 	private int actionChip;
 	private int totalIn;
 	
+	private List<Card> cards;
+	
 	public Player(int chip, Socket socket) {
 		this.chip = chip;
 		this.socket = socket;
 		this.state = Player.STATES[0];
 		this.actionChip = 0;
 		this.totalIn = 0;
+		this.cards = new ArrayList<Card>(2);
 	}
 	
 	public int getChip() {
@@ -62,8 +67,16 @@ public class Player {
 	public int check() {
 		this.state = Player.STATES[1];
 		return 0;
-	}	
-	
+	}
+		
+	public List<Card> getCards() {
+		return cards;
+	}
+
+	public void setCards(List<Card> cards) {
+		this.cards = cards;
+	}
+
 	public int bet(int n) {
 		int result = putChip(n);
 		this.totalIn += result;

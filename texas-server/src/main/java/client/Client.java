@@ -101,6 +101,7 @@ public class Client {
 		
 		try{
 			client = new Client();
+			System.out.println(client.socket.getLocalPort());
 		}catch (Exception e){
 //			e.printStackTrace();
 			System.out.println("init client exception");

@@ -6,7 +6,7 @@ state包含：wait fold check all-in bet raise reraise
 		init number
 		--number 筹码数量
 	deal card:
-		deal cardpoint,cardsuit cardpoint,cardsuit
+		deal playerport card card
 		
 	update view:发送牌局当前状态
 		uv poketnumber pot gamestate com_card,com_card,... player,chip,state,number ...
