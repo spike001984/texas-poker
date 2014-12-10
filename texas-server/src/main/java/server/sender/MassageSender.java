@@ -42,14 +42,24 @@ public class MassageSender {
 		}
 	}
 	
-	public static void deal(PrintWriter pw, Player player) {
+	public static void deal(Player player) {
 		List<Card> poket = player.getCards();
 		StringBuilder builder = new StringBuilder();
 		builder.append("deal ");
 		builder.append(player.getSocket().getPort() + " ");
 		builder.append(poket.get(0)+" ");
 		builder.append(poket.get(1));
-		pw.println(builder.toString());
+		
+		PrintWriter pw = null;
+		try {
+			pw = IOHelper.getWriter(player.getSocket());
+			pw.println(builder.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+		}
 	}
 	
 	public static void yourTurn(Player player, String availableAction) {
