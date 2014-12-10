@@ -1,6 +1,12 @@
 package server.states;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import server.Card;
 import server.Game;
+import server.Player;
+import util.FinalCard;
 
 public class GameEndingState extends BaseState{
 
