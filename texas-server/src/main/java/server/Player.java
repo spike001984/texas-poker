@@ -79,7 +79,6 @@ public class Player {
 
 	public int bet(int n) {
 		int result = putChip(n);
-		this.totalIn += result;
 		if(0 == this.chip){
 			this.setState(Player.STATES[6]);
 		}else {
@@ -90,7 +89,6 @@ public class Player {
 	
 	public int raise(int n) {
 		int result = putChip(n);
-		this.totalIn += result;
 		if (0 == this.chip) {
 			this.setState(Player.STATES[6]);
 		} else {
@@ -101,7 +99,6 @@ public class Player {
 	
 	public int reraise(int n) {
 		int result = putChip(n);
-		this.totalIn += result;
 		if (0 == this.chip) {
 			this.setState(Player.STATES[6]);
 		} else {
@@ -111,8 +108,7 @@ public class Player {
 	}
 	
 	public int allIn() {
-		int result = putChip(this.chip);
-		this.totalIn += result;
+		int result = putChip(this.chip+this.actionChip);
 		this.setState(Player.STATES[6]);
 		return result;
 	}
@@ -124,7 +120,6 @@ public class Player {
 	
 	public int call(int n) {
 		int result = putChip(n);
-		this.totalIn += result;
 		if (0 == this.chip) {
 			this.setState(Player.STATES[6]);
 		} else {
@@ -133,7 +128,10 @@ public class Player {
 		return result;
 	}
 	
-	public int putChip(int n) {
+	public int putChip(int n){
+		chip += actionChip;
+		totalIn -= actionChip;
+		
 		int number = 0;
 		if(chip <= n){
 			number = chip;
@@ -142,6 +140,9 @@ public class Player {
 			number = n;
 			chip -= n;
 		}
+		actionChip = number;
+		totalIn += actionChip;
+		
 		return number;
 	}
 	

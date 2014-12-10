@@ -9,7 +9,9 @@ import server.states.BaseState;
 import server.states.FlopState;
 import server.states.PreFlopState;
 
-public class Game { 
+public class Game {
+	public static String[] PLAYER_ACTIONS = {"check", "bet", "call", "raise", "all-in", "fold"};
+	
 	private int pot;
 	private Table table;
 	
@@ -34,8 +36,6 @@ public class Game {
 		this.boardCards = new ArrayList<Card>(7);
 		this.isEnd = false;
 	}
-	
-	
 	
 	public int getPot() {
 		return pot;
@@ -77,8 +77,30 @@ public class Game {
 		
 	}
 	
+	public void initPlayersState(){
+		for(Player player : playerList) {
+			if(!player.getState().equals(Player.STATES[5])
+					&& !player.getState().equals(Player.STATES[6])){
+				player.setState(Player.STATES[0]);
+				player.setActionChip(0);
+			}
+		}
+	}
+	
+	public void initBlinds(){
+		for(Player player : playerList) {
+			if(player.getState().equals(Player.STATES[3])){
+				player.setState(Player.STATES[0]);
+			}
+		}
+	}
+	
+	
+	public void increaseSmBlindIndex(){
+		table.smBlindIndex = (table.smBlindIndex + 1) % playerList.size();
+	}
+	
 	public void start() {
-		this.setState(new FlopState(this));
 		while(!isEnd){
 			state.action();
 		}
@@ -89,7 +111,7 @@ public class Game {
 		for(Player player : playerList) {
 			if(!player.getState().equals(Player.STATES[5])){
 				playerAlive++;
-				if(playerAlive>1){
+				if(playerAlive > 1){
 					return false;
 				}
 			}
@@ -98,12 +120,14 @@ public class Game {
 	}
 	
 	public boolean isAllCall() {
-		int inChip = playerList.get(0).getActionChip();
+		
 		for(Player player : playerList) {
-			if(inChip != player.getActionChip()){
+			if((player.getState().equals(Player.STATES[0]))
+					|| (player.getActionChip() != state.getBetChip() && !player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[6]))){
 				return false;
 			}
 		}
+		
 		return true;
 	}
 	
@@ -115,7 +139,7 @@ public class Game {
 		return table.smBlindIndex;
 	}
 	
-	public String getUpdateMassage() {
+	public String getUpdateMassage(Player player) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("uv ");
 		builder.append(table.getPlayerNumber() + " ");
@@ -129,8 +153,9 @@ public class Game {
 			}
 		}
 		//add player info
-		for(Player player : playerList) {
-			builder.append(" " + player.getUpdateMassage());
+		int index = playerList.indexOf(player);
+		for(int i = 1; i <= playerList.size(); i++){
+			builder.append(" " + playerList.get((index + i) % playerList.size()).getUpdateMassage());
 		}
 		return builder.toString();
 	}
@@ -157,5 +182,93 @@ public class Game {
 		Card card = deck.deal();
 		boardCards.add(card);
 		return card;
+	}
+	
+	/*
+	 * return a part of "your turn" message
+	 */
+	public String getPlayerAvalableAction(int playerIndex) {
+		Player currentPlayer = playerList.get(playerIndex);
+		
+		//player's state is fold or all-in
+		if(currentPlayer.getState().equals(Player.STATES[6])
+				||currentPlayer.getState().equals(Player.STATES[7])){
+			return null;
+		}
+		//player's state is wait
+		if(currentPlayer.getState().equals(Player.STATES[0])){
+			if(currentPlayer.getActionChip() == state.getBetChip()) {
+				return "0 1 1 0 1 1";
+			}/*has enough chip*/else if(currentPlayer.getChip() >= state.getBetChip()-currentPlayer.getActionChip()){
+				return "1 1 0 1 1 0";
+			}/*not has enough chip*/else {
+				return "0 1 0 0 1 0";
+			}
+		}
+		
+		if(currentPlayer.getChip() >= state.getBetChip()-currentPlayer.getActionChip()){
+			return "1 1 0 1 1 0";
+		} else {
+			return "0 1 0 0 1 0";
+		}
+	}
+	
+	/*
+	 *	player's action 
+	 */
+	public void bet(Player player, int chip){
+		// TODO Auto-generated method stub
+		pot = pot - player.getActionChip();
+		int realChip = player.bet(chip);
+		pot = pot + realChip;
+		if(realChip > state.getBetChip()){
+			state.setBetChip(realChip);
+		}
+	}
+	
+	public void raise(Player player, int chip){
+		// TODO Auto-generated method stub
+		pot = pot - player.getActionChip();
+		int realChip = player.raise(chip);
+		pot = pot + realChip;
+		if(realChip > state.getBetChip()){
+			state.setBetChip(realChip);
+		}
+	}
+	
+	public void call(Player player){
+		// TODO Auto-generated method stub
+		pot = pot - player.getActionChip();
+		int realChip = player.call(state.getBetChip());
+		pot = pot + realChip;
+		if(realChip > state.getBetChip()){
+			state.setBetChip(realChip);
+		}
+	}
+	
+	public void check(Player player){
+		// TODO Auto-generated method stub
+		player.check();
+	}
+	
+	public void allIn(Player player){
+		// TODO Auto-generated method stub
+		pot = pot - player.getActionChip();
+		int realChip = player.allIn();
+		pot = pot + realChip;
+		if(realChip > state.getBetChip()){
+			state.setBetChip(realChip);
+		}
+	}
+	
+	public void fold(Player player){
+		// TODO Auto-generated method stub
+		player.fold();
+	}
+	
+	public void printGameState() {
+		System.out.println(state);
+		System.out.println("Pot: " + pot);
+		System.out.println("BetChip: " + state.getBetChip());
 	}
 }

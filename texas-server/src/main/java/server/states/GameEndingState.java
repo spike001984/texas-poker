@@ -26,4 +26,10 @@ public class GameEndingState extends BaseState{
 		}
 	}
 
+	@Override
+	public void beforePlayerAction() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

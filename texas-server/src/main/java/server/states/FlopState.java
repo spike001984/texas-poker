@@ -1,13 +1,7 @@
 package server.states;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-
 import server.Game;
 import server.Player;
-import server.sender.MassageSender;
-import server.utils.IOHelper;
 
 public class FlopState extends BaseState{
 
@@ -15,49 +9,6 @@ public class FlopState extends BaseState{
 		super(game);
 		// TODO Auto-generated constructor stub
 		this.state = "flop";
-	}
-
-	@Override
-	public void action() {
-		// TODO Auto-generated method stub
-		List<Player> playerList = this.game.getPlayerList();
-		//deal to player
-		dealPoket(playerList);
-		//deal board cards
-		deal2board();
-		//update view
-		MassageSender.updateView(playerList, this.game.getUpdateMassage());
-		//player's action
-		playerAction();
-		
-	}
-
-	@Override
-	public void next() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void dealPoket(List<Player> playerList){
-		int smBlindIndex = this.game.getSmBlind();
-		
-		for(int i = 0; i < playerList.size(); i++){
-			Player player = (Player) playerList.get((i+smBlindIndex)%playerList.size());
-			
-			deal2player(player);
-			
-			PrintWriter pw = null;
-			try {
-				pw = IOHelper.getWriter(player.getSocket());
-				MassageSender.deal(pw, player);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}finally {
-
-			}
-		}
-
 	}
 	
 	public void deal2player(Player player) {
@@ -70,8 +21,21 @@ public class FlopState extends BaseState{
 		this.game.deal2Board();
 		this.game.deal2Board();
 	}
-	
-	public void playerAction() {
-		
+
+	@Override
+	public void beforePlayerAction() {
+		// TODO Auto-generated method stub
+		game.initPlayersState();
+		deal2board();
+	}
+
+	@Override
+	public void next() {
+		// TODO Auto-generated method stub
+		if(game.isOnlyOneAlive()){
+			game.setState(new GameEndingState(game));
+		} else if (game.isAllCall()) {
+			game.setState(new TurnState(game));
+		}
 	}
 }

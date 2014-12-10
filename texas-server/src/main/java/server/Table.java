@@ -3,23 +3,20 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.decoder.MassageDecoder;
-
 public class Table {
 	public int smBlind = 1;
 	public int bBlind = 2;
 	public int inChip = 200;
 	public int seatNumber = 2;
+	
 	public int smBlindIndex = 0;
 	private static Table table = null;
 	
 	private List<Player> playerList;
 	private Game game;
-	private MassageDecoder decoder;
 	
 	private Table() {
 		this.playerList = new ArrayList<Player>();
-		this.decoder = new MassageDecoder();
 	}
 	
 	public static Table getTableInstance() {

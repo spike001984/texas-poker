@@ -3,11 +3,11 @@
 Server massage:
 state包含：wait fold check all-in bet raise reraise
 	initchip：初始玩家筹码
-		init number
-		--number 筹码数量
+		init allchip smblind bigblind ante
+		--
 	deal card:
 		deal playerport card card
-		
+	
 	update view:发送牌局当前状态
 		uv poketnumber pot gamestate com_card,com_card,... player,chip,state,number ...
 		--poketnumber 玩家个数
@@ -16,7 +16,9 @@ state包含：wait fold check all-in bet raise reraise
 		--player,chip,state,number 玩家，筹码，状态，下注筹码
 		
 	your turn: 表示轮到该玩家行动
-		--yt
+		yt action action
+		--action: call fold check raise all-in bet
+		
 	end: 结束玩家游戏
 		end msg
 		--msg 结束信息
@@ -28,15 +30,12 @@ Client massage:
 		--n 下注大小
 	raise:
 		raise n
-	reraise:
-		reraise n
+		--n 为最后大小
 	call：
 		call
 	check：
 		check
 	all-in：
 		all-in
-	quit:退出游戏
-		quit
-	ready:准备开始
-		ready
+	fold:
+		fold
