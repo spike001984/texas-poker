@@ -4,6 +4,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.FinalCard;
+
 public class Player {
 	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL"};
 	private int chip;
@@ -12,6 +14,20 @@ public class Player {
 	private int actionChip;
 	private int totalIn;
 	
+	/**
+	 * For result calculating.
+	 */
+	private FinalCard finalCard;
+	public int loseCounter = 0;  //The number of player whose final card is bigger than self.
+	
+	public FinalCard getFinalCard() {
+		return finalCard;
+	}
+
+	public void setFinalCard(FinalCard finalCard) {
+		this.finalCard = finalCard;
+	}
+
 	private List<Card> cards;
 	
 	public Player(int chip, Socket socket) {
@@ -148,10 +164,15 @@ public class Player {
 	
 	public String getUpdateMassage() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(socket.getPort()+",");
+		if (socket != null) {
+			builder.append(socket.getPort()+",");
+		}
+		
 		builder.append(this.chip+",");
 		builder.append(this.state+",");
-		builder.append(this.actionChip);
+		builder.append(this.actionChip+",");
+		builder.append(this.totalIn);
+		
 		return builder.toString();
 	}
 }
