@@ -29,13 +29,12 @@ public class Client {
 	
 	public void talk() throws IOException {
 		try {
-			BufferedReader br = getReader(socket);
 			PrintWriter pw = getWriter(socket);
 			BufferedReader localBr = new BufferedReader(new InputStreamReader(System.in));
 			String msg = null;
+			
 			while((msg = localBr.readLine())!=null){
 				pw.println(msg);
-				System.out.println(br.readLine());
 				
 				if(msg.equals("bye"))
 					break;				
@@ -51,16 +50,70 @@ public class Client {
 		}
 	}
 	
+	public void echo() {
+		BufferedReader br = null;
+			try {
+				br = getReader(socket);
+				while(true) {
+					System.out.println(br.readLine());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	}
+	
+	public void starTalk(){
+		new Thread() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					talk();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+	
+	public void starEcho(){
+		new Thread() {
+			@Override
+			public void run() {
+				echo();
+			}
+		}.start();
+	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		new Client().talk();
-	}
-	
-	public String echo(String msg) {
-		return msg;
-	}
-	
+		Client client = null;
+		
+		try{
+			client = new Client();
+		}catch (Exception e){
+//			e.printStackTrace();
+			System.out.println("init client exception");
+		}
+		
+		try{
+			client.starEcho();
+			client.starTalk();
+		}catch (Exception e){
+//			e.printStackTrace();
+			System.out.println("run client exception");
+		}
 
-
+		
+	}
 }
