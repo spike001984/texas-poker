@@ -35,12 +35,19 @@ public class Server {
 			}
 		}
 		
-		table.startGame();		
+		table.startGame();	
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		new Server().service();
+		
 	}
 
 }

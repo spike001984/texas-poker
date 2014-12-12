@@ -45,7 +45,7 @@ public class Table {
 		return playerList.size();
 	}
 	
-	public List getPlayerList() {
+	public List<Player> getPlayerList() {
 		return this.playerList;
 	}
 	

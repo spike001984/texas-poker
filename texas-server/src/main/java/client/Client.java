@@ -13,6 +13,11 @@ public class Client {
 	private int port = 8900;
 	private Socket socket;
 	
+	private static Thread echoThread;
+	private static Thread talkThread;
+	
+	BufferedReader lb = null;
+	
 	public Client() throws IOException {
 		socket = new Socket(host,port);
 	}
@@ -30,14 +35,16 @@ public class Client {
 	public void talk() throws IOException {
 		try {
 			PrintWriter pw = getWriter(socket);
-			BufferedReader localBr = new BufferedReader(new InputStreamReader(System.in));
+			this.lb = new BufferedReader(new InputStreamReader(System.in));
 			String msg = null;
 			
-			while((msg = localBr.readLine())!=null){
-				pw.println(msg);
-				
-				if(msg.equals("bye"))
-					break;				
+			while(true){
+				if((msg = this.lb.readLine())!=null){
+					pw.println(msg);
+					if(msg.equals("bye")){
+						break;
+					}
+				}		
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -54,8 +61,14 @@ public class Client {
 		BufferedReader br = null;
 			try {
 				br = getReader(socket);
+				String str = null;
 				while(true) {
-					System.out.println(br.readLine());
+					str = br.readLine();
+					if(str != null){
+						System.out.println(str);
+					}else {
+						break;
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -63,6 +76,7 @@ public class Client {
 			} finally {
 				try {
 					br.close();
+					socket.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -71,7 +85,7 @@ public class Client {
 	}
 	
 	public void starTalk(){
-		new Thread() {
+		talkThread = new Thread() {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
@@ -82,20 +96,24 @@ public class Client {
 					e.printStackTrace();
 				}
 			}
-		}.start();
+		};
+		talkThread.start();
 	}
 	
+	
+	
 	public void starEcho(){
-		new Thread() {
+		echoThread = new Thread() {
 			@Override
 			public void run() {
 				echo();
 			}
-		}.start();
+		};
+		echoThread.start();
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		Client client = null;
 		
@@ -103,7 +121,6 @@ public class Client {
 			client = new Client();
 			System.out.println(client.socket.getLocalPort());
 		}catch (Exception e){
-//			e.printStackTrace();
 			System.out.println("init client exception");
 		}
 		
@@ -111,10 +128,16 @@ public class Client {
 			client.starEcho();
 			client.starTalk();
 		}catch (Exception e){
-//			e.printStackTrace();
 			System.out.println("run client exception");
 		}
 
-		
+		try {
+			echoThread.join();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("end");
+		System.exit(0);
 	}
 }

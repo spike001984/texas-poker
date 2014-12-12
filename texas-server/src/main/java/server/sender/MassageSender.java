@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import server.Card;
-import server.Game;
 import server.Player;
 import server.utils.IOHelper;
 
@@ -42,6 +41,19 @@ public class MassageSender {
 		}
 	}
 	
+	public static void updateView(Player player, String massage) {
+			PrintWriter pw = null;
+			try {
+				pw = IOHelper.getWriter(player.getSocket());
+				pw.println(massage);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+
+			}
+	}
+	
 	public static void deal(Player player) {
 		List<Card> poket = player.getCards();
 		StringBuilder builder = new StringBuilder();
@@ -72,6 +84,22 @@ public class MassageSender {
 			pw.println(builder.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static void sayGoodbye(List<Player> playerList) {
+		// TODO Auto-generated method stub
+		for(Player player : playerList) {
+			PrintWriter pw = null;
+			try {
+				pw = IOHelper.getWriter(player.getSocket());
+				pw.println("bye");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+
+			}
 		}
 	}
 

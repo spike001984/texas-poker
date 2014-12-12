@@ -3,12 +3,9 @@ package server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import server.states.BaseState;
-import server.states.FlopState;
 import server.states.PreFlopState;
 import util.FinalCard;
 
@@ -18,31 +15,26 @@ public class Game {
 	private int pot;
 	private Table table;
 	
-	private Map chipMap;
 	private BaseState state;
 	private List<Player> playerList;
 	
 	private Deck deck;
 	private List<Card> boardCards;
 	
+	private boolean isEnd;
 	
 	public List<Card> getBoardCards() {
 		return boardCards;
 	}
 
-
-
 	public void setBoardCards(List<Card> boardCards) {
 		this.boardCards = boardCards;
 	}
-
-	private boolean isEnd;
 	
 	@SuppressWarnings("unchecked")
 	public Game(Table table) {
 		this.pot = 0;
 		this.table = table;
-		this.chipMap = new HashMap();
 		this.state = (BaseState)new PreFlopState(this);
 		this.playerList = table.getPlayerList();
 		this.deck = Deck.getDeckInstance();
@@ -66,14 +58,6 @@ public class Game {
 		this.table = table;
 	}
 
-	public Map getChipMap() {
-		return chipMap;
-	}
-
-	public void setChipMap(Map chipMap) {
-		this.chipMap = chipMap;
-	}
-
 	public BaseState getState() {
 		return state;
 	}
@@ -86,14 +70,33 @@ public class Game {
 		this.playerList = playerList;
 	}
 
+	public boolean isEnd() {
+		return isEnd;
+	}
+
+	public void setEnd(boolean isEnd) {
+		this.isEnd = isEnd;
+	}
+
 	public void init() {
+		for(Player player : playerList) {
+			if(0 == player.getChip()){
+				player.setState(Player.STATES[8]);
+			}
+			player.setActionChip(0);
+		}
+		
+		this.pot = 0;
+		this.deck = Deck.getDeckInstance();
+		this.boardCards.clear();
 		
 	}
 	
 	public void initPlayersState(){
 		for(Player player : playerList) {
 			if(!player.getState().equals(Player.STATES[5])
-					&& !player.getState().equals(Player.STATES[6])){
+					&& !player.getState().equals(Player.STATES[6])
+					&& !player.getState().equals(Player.STATES[8])){
 				player.setState(Player.STATES[0]);
 				player.setActionChip(0);
 			}
@@ -102,12 +105,11 @@ public class Game {
 	
 	public void initBlinds(){
 		for(Player player : playerList) {
-			if(player.getState().equals(Player.STATES[3])){
+			if(!player.getState().equals(Player.STATES[8])){
 				player.setState(Player.STATES[0]);
 			}
 		}
 	}
-	
 	
 	public void increaseSmBlindIndex(){
 		table.smBlindIndex = (table.smBlindIndex + 1) % playerList.size();
@@ -115,6 +117,7 @@ public class Game {
 	
 	public void start() {
 		while(!isEnd){
+//			init();
 			state.action();
 		}
 	}
@@ -122,7 +125,7 @@ public class Game {
 	public boolean isOnlyOneAlive() {
 		int playerAlive = 0;
 		for(Player player : playerList) {
-			if(!player.getState().equals(Player.STATES[5])){
+			if(!player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[8])){
 				playerAlive++;
 				if(playerAlive > 1){
 					return false;
@@ -136,7 +139,7 @@ public class Game {
 		
 		for(Player player : playerList) {
 			if((player.getState().equals(Player.STATES[0]))
-					|| (player.getActionChip() != state.getBetChip() && !player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[6]))){
+					|| (player.getActionChip() != state.getBetChip() && !player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[6]) &&  !player.getState().equals(Player.STATES[8]))){
 				return false;
 			}
 		}
@@ -263,11 +266,21 @@ public class Game {
 	}
 	
 	public boolean isThereAWiner() {
-		return false;
+		
+		int aliveCount = 0;
+		for(Player player : playerList) {
+			if(0 != player.getChip()){
+				aliveCount++;
+				if(aliveCount > 1){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	public void endTable(){
-		
+		setEnd(true);
 	}
 	
 	public Card deal2player(Player player) {
@@ -290,7 +303,8 @@ public class Game {
 		
 		//player's state is fold or all-in
 		if(currentPlayer.getState().equals(Player.STATES[6])
-				||currentPlayer.getState().equals(Player.STATES[7])){
+				|| currentPlayer.getState().equals(Player.STATES[7])
+				|| 0 == currentPlayer.getChip()){
 			return null;
 		}
 		//player's state is wait

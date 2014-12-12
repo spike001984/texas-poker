@@ -50,6 +50,7 @@ public class PreFlopState extends BaseState{
 	public void deal2player(Player player) {
 		this.game.deal2player(player);
 		this.game.deal2player(player);
+		MassageSender.deal(player);
 	}
 
 	@Override

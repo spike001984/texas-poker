@@ -7,7 +7,7 @@ import java.util.List;
 import util.FinalCard;
 
 public class Player {
-	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL"};
+	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL", "LOSE"};
 	private int chip;
 	private String state;
 	private Socket socket;

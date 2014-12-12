@@ -21,7 +21,7 @@ public abstract class BaseState {
 	public void action(){
 		beforePlayerAction();
 		int smIndex = game.getTable().smBlindIndex;
-		this.playerAction((smIndex+2) % game.getPlayerList().size());
+		playerAction((smIndex+2) % game.getPlayerList().size());
 	}
 	public abstract void beforePlayerAction();
 	
@@ -43,7 +43,8 @@ public abstract class BaseState {
 		List<Player> playerList = game.getPlayerList();
 		for(int i = startIndex; !game.isOnlyOneAlive() && !game.isAllCall(); i = (i+1)%playerList.size()) {
 			Player player = playerList.get(i);
-			MassageSender.updateView(playerList, game.getUpdateMassage(player));
+//			MassageSender.updateView(playerList, game.getUpdateMassage(player));
+			MassageSender.updateView(player, game.getUpdateMassage(player));
 			String availableAction = game.getPlayerAvalableAction(i);
 			if(null == availableAction) {
 				continue;
