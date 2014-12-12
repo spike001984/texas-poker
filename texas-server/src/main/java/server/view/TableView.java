@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 
@@ -13,13 +14,14 @@ import server.Player;
 
 public class TableView {
 
-	public static int WIDTH = 800;
+	public static int WIDTH = 1000;
 	public static int HIGHT = 500;
 	public static int MAX_PLAYER_NUM = 10;
 	
 	private JFrame frame;
 	private JPanel centerPanel;
-	private JTextArea[] playerArea;
+	private ArrayList<JTextArea> playerArea;
+	private JTextArea logArea;
 	private int playerNum;
 	private int actingPlayer = -1;
 	
@@ -42,16 +44,26 @@ public class TableView {
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(2, 5));
 		
-		playerArea = new JTextArea[playerNum];
+		playerArea = new ArrayList<JTextArea>();
+		JTextArea tmp;
 		
 		for ( int i = 0; i < playerNum; i++ ) {
-			playerArea[i] = new JTextArea();
-			playerArea[i].setEditable(false);
-			centerPanel.add(playerArea[i]);
-			playerArea[i].setText("Player: " + i);
+			tmp = new JTextArea();
+			tmp.setEditable(false);
+			tmp.setText("Player: " + i);
+			playerArea.add(tmp);
+			centerPanel.add(tmp);
 		}
 		
+		logArea = new JTextArea();
+		logArea.setEditable(false);
+		logArea.setLineWrap(true);
+		logArea.setColumns(20);
+		
+		JScrollPane scrollPane = new JScrollPane(logArea);
+		
 		frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
+		frame.getContentPane().add(scrollPane, BorderLayout.WEST);
 	}
 	
 	/**
@@ -74,7 +86,7 @@ public class TableView {
 		
 		String text = "Player " + index + ":\n";
 		text += player.getPrintMsg();
-		playerArea[index].setText(text);
+		playerArea.get(index).setText(text);
 	}
 	
 	public void updateAllPlayer(ArrayList<Player> players) {
@@ -100,14 +112,27 @@ public class TableView {
 		
 		//Rest acting player.
 		if (actingPlayer >= 0) {
-			playerArea[actingPlayer].setBorder(null);
+			playerArea.get(actingPlayer).setBorder(null);
 		}
 		
 		if (index >= 0) {
-			playerArea[index].setBorder(new EtchedBorder());
+			playerArea.get(index).setBorder(new EtchedBorder());
 		}
 		
 		actingPlayer = index;
+	}
+	
+	public void removePlayer(int index) {
+		if (index < 0 || index >= playerNum || index == actingPlayer) {
+			System.out.println("remove player failed. invalid index: " + index);
+		}
+		
+		
+	}
+	
+	public void appendLog(String log) {
+		logArea.append(log + "\n");
+		logArea.setCaretPosition(logArea.getText().length());
 	}
 	
 	public void clear() {
@@ -121,5 +146,10 @@ public class TableView {
 		view.updatePlayer(new Player(200, null), 1);
 		view.setActingPlayer(4);
 		view.setActingPlayer(5);
+		
+		for ( int i = 0; i < 50; i++ ) {
+			view.appendLog("Player 123 connected");
+		}
+		
 	}
 }
