@@ -1,41 +1,42 @@
-协议中的所有message都是以空格分隔的字符串
+鍗忚涓殑鎵�鏈塵essage閮芥槸浠ョ┖鏍煎垎闅旂殑瀛楃涓�
 
 Server massage:
-state包含：wait fold check all-in bet raise reraise
-	initchip：初始玩家筹码
-		init allchip smblind bigblind ante
+state鍖呭惈锛歸ait fold check all-in bet raise reraise
+	initchip锛氬垵濮嬬帺瀹剁鐮�
+		init allchip smblind bigblind ante pid0,pi1,pi2... self_pid
 		--
-	deal card:
-		deal playerport card card
 	
-	update view:发送牌局当前状态
+	deal card:
+		deal playerport card card sbindex bbindex
+	
+	update view:鍙戦�佺墝灞�褰撳墠鐘舵��
 		uv poketnumber pot gamestate com_card,com_card,... player,chip,state,number ...
-		--poketnumber 玩家个数
-		--pot 底池大小
-		--gamestate:preflop，flop，turn，river，afterriver
-		--player,chip,state,number 玩家，筹码，状态，下注筹码
+		--poketnumber 鐜╁涓暟
+		--pot 搴曟睜澶у皬
+		--gamestate:preflop锛宖lop锛宼urn锛宺iver锛宎fterriver
+		--player,chip,state,number 鐜╁锛岀鐮侊紝鐘舵�侊紝涓嬫敞绛圭爜
 		
-	your turn: 表示轮到该玩家行动
+	your turn: 琛ㄧず杞埌璇ョ帺瀹惰鍔�
 		yt action action
 		--action: call fold check raise all-in bet
 		
-	end: 结束玩家游戏
+	end: 缁撴潫鐜╁娓告垙
 		end msg
-		--msg 结束信息
-	其余回复的信息为client的指令加后缀‘-r’空格状态码：如call-r 0 msg,0表示正常，1表示异常，只有1后面会加msg
+		--msg 缁撴潫淇℃伅
+	鍏朵綑鍥炲鐨勪俊鎭负client鐨勬寚浠ゅ姞鍚庣紑鈥�-r鈥欑┖鏍肩姸鎬佺爜锛氬call-r 0 msg,0琛ㄧず姝ｅ父锛�1琛ㄧず寮傚父锛屽彧鏈�1鍚庨潰浼氬姞msg
 
 Client massage:
-	bet：
+	bet锛�
 		bet n
-		--n 下注大小
+		--n 涓嬫敞澶у皬
 	raise:
 		raise n
-		--n 为最后大小
-	call：
+		--n 涓烘渶鍚庡ぇ灏�
+	call锛�
 		call
-	check：
+	check锛�
 		check
-	all-in：
+	all-in锛�
 		all-in
 	fold:
 		fold
