@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import server.Game;
+
 public class Client {
 	private String host = "127.0.0.1";
 	private int port = 8900;
@@ -66,6 +68,7 @@ public class Client {
 					str = br.readLine();
 					if(str != null){
 						System.out.println(str);
+						ai_response(str);
 					}else {
 						break;
 					}
@@ -84,6 +87,41 @@ public class Client {
 			}
 	}
 	
+	private void ai_response(String str) {
+		// TODO Auto-generated method stub
+		String res = ai_simple_response(str);
+		try {
+			PrintWriter pw = getWriter(socket);
+			pw.println(res);
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				socket.close();
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static String ai_simple_response(String input) {
+		int rand = 0;
+		String[] avaActionStr = input.split(" ");
+		
+		do {
+			rand = (int) (Math.random() * 6);
+		} while (0 == Integer.parseInt(avaActionStr[rand]));
+		
+		String response = Game.actionIndex[rand];
+		
+		//Bet and raise need argument.
+		if (rand == 1 || rand == 3) {
+			response += " 6";
+		}
+		return response;
+	}
+
 	public void starTalk(){
 		talkThread = new Thread() {
 			@Override
@@ -115,7 +153,7 @@ public class Client {
 	
 	public static void main(String[] args){
 		// TODO Auto-generated method stub
-		Client client = null;
+		/*Client client = null;
 		
 		try{
 			client = new Client();
@@ -138,6 +176,12 @@ public class Client {
 			e.printStackTrace();
 		}
 		System.out.println("end");
-		System.exit(0);
+		System.exit(0);*/
+		
+		String res = ai_simple_response("0 1 1 1 1 1");
+		
+		System.out.println(res);
 	}
+	
+	
 }

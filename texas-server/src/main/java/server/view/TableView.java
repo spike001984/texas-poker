@@ -85,7 +85,7 @@ public class TableView {
 		}
 		
 		String text = "Player " + index + ":\n";
-		text += player.getPrintMsg();
+		//text += player.getPrintMsg();
 		playerArea.get(index).setText(text);
 	}
 	

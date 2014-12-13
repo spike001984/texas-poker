@@ -21,6 +21,9 @@ public class Game {
 		public static String FOLD = "fold";	//5
 	}
 	
+	public static final String[] actionIndex = {
+		"check", "bet", "call", "raise", "all-in", "fold"
+	};
 	private int pot;
 	private Table table;
 	
