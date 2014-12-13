@@ -7,7 +7,20 @@ import java.util.List;
 import util.FinalCard;
 
 public class Player {
-	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL", "LOSE"};
+//	public static final String[] STATES = {"WAIT", "CHECK", "BET", "RAISE", "RERAISE", "FOLD", "ALL-IN", "CALL", "LOSE"};
+	
+	public static class States{
+		public static String WAIT = "WAIT";	//0
+		public static String CHECK = "CHECK";	//1
+		public static String BET = "BET";	//2
+		public static String RAISE = "RAISE";	//3
+		public static String RERAISE = "RERAISE";	//4
+		public static String FOLD = "FOLD";	//5
+		public static String ALL_IN = "ALL-IN";	//6
+		public static String CALL = "CALL";	//7
+		public static String LOSE = "LOSE";	//8
+	}
+	
 	private int chip;
 	private String state;
 	private Socket socket;
@@ -33,7 +46,7 @@ public class Player {
 	public Player(int chip, Socket socket) {
 		this.chip = chip;
 		this.socket = socket;
-		this.state = Player.STATES[0];
+		this.state = States.WAIT;
 		this.actionChip = 0;
 		this.totalIn = 0;
 		this.cards = new ArrayList<Card>(2);
@@ -81,7 +94,7 @@ public class Player {
 	}
 
 	public int check() {
-		this.state = Player.STATES[1];
+		this.state = States.CHECK;
 		return 0;
 	}
 		
@@ -96,9 +109,9 @@ public class Player {
 	public int bet(int n) {
 		int result = putChip(n);
 		if(0 == this.chip){
-			this.setState(Player.STATES[6]);
+			this.setState(States.ALL_IN);
 		}else {
-			this.setState(Player.STATES[2]);
+			this.setState(States.BET);
 		}
 		return result;
 	}	
@@ -106,9 +119,9 @@ public class Player {
 	public int raise(int n) {
 		int result = putChip(n);
 		if (0 == this.chip) {
-			this.setState(Player.STATES[6]);
+			this.setState(Player.States.ALL_IN);
 		} else {
-			this.setState(Player.STATES[3]);
+			this.setState(Player.States.RAISE);
 		}
 		return result;
 	}
@@ -116,30 +129,30 @@ public class Player {
 	public int reraise(int n) {
 		int result = putChip(n);
 		if (0 == this.chip) {
-			this.setState(Player.STATES[6]);
+			this.setState(States.ALL_IN);
 		} else {
-			this.setState(Player.STATES[4]);
+			this.setState(States.RERAISE);
 		}
 		return result;
 	}
 	
 	public int allIn() {
 		int result = putChip(this.chip+this.actionChip);
-		this.setState(Player.STATES[6]);
+		this.setState(States.ALL_IN);
 		return result;
 	}
 	
 	public int fold() {
-		this.setState(Player.STATES[5]);
+		this.setState(States.FOLD);
 		return 0;
 	}
 	
 	public int call(int n) {
 		int result = putChip(n);
 		if (0 == this.chip) {
-			this.setState(Player.STATES[6]);
+			this.setState(States.ALL_IN);
 		} else {
-			this.setState(Player.STATES[7]);
+			this.setState(States.CALL);
 		}
 		return result;
 	}

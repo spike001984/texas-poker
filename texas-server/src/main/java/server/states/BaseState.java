@@ -39,6 +39,14 @@ public abstract class BaseState {
 		this.betChip = betChip;
 	}
 
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public void playerAction(int startIndex) {
 		List<Player> playerList = game.getPlayerList();
 		for(int i = startIndex; !game.isOnlyOneAlive() && !game.isAllCall(); i = (i+1)%playerList.size()) {

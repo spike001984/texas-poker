@@ -10,7 +10,16 @@ import server.states.PreFlopState;
 import util.FinalCard;
 
 public class Game {
-	public static String[] PLAYER_ACTIONS = {"check", "bet", "call", "raise", "all-in", "fold"};
+//	public static String[] PLAYER_ACTIONS = {"check", "bet", "call", "raise", "all-in", "fold"};
+	
+	public static class PlayerActions {
+		public static String CHECK = "check";	//0
+		public static String BET = "bet";	//1
+		public static String CALL = "call";	//2
+		public static String RAISE = "raise";	//3
+		public static String ALL_IN = "all-in";	//4
+		public static String FOLD = "fold";	//5
+	}
 	
 	private int pot;
 	private Table table;
@@ -31,7 +40,6 @@ public class Game {
 		this.boardCards = boardCards;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Game(Table table) {
 		this.pot = 0;
 		this.table = table;
@@ -81,7 +89,7 @@ public class Game {
 	public void init() {
 		for(Player player : playerList) {
 			if(0 == player.getChip()){
-				player.setState(Player.STATES[8]);
+				player.setState(Player.States.LOSE);
 			}
 			player.setActionChip(0);
 		}
@@ -94,10 +102,10 @@ public class Game {
 	
 	public void initPlayersState(){
 		for(Player player : playerList) {
-			if(!player.getState().equals(Player.STATES[5])
-					&& !player.getState().equals(Player.STATES[6])
-					&& !player.getState().equals(Player.STATES[8])){
-				player.setState(Player.STATES[0]);
+			if(!player.getState().equals(Player.States.FOLD)
+					&& !player.getState().equals(Player.States.ALL_IN)
+					&& !player.getState().equals(Player.States.LOSE)){
+				player.setState(Player.States.WAIT);
 				player.setActionChip(0);
 			}
 		}
@@ -105,14 +113,15 @@ public class Game {
 	
 	public void initBlinds(){
 		for(Player player : playerList) {
-			if(!player.getState().equals(Player.STATES[8])){
-				player.setState(Player.STATES[0]);
+			if(!player.getState().equals(Player.States.LOSE)){
+				player.setState(Player.States.WAIT);
 			}
 		}
 	}
 	
 	public void increaseSmBlindIndex(){
-		table.smBlindIndex = (table.smBlindIndex + 1) % playerList.size();
+//		table.smBlindIndex = (table.smBlindIndex + 1) % playerList.size();
+		table.smBlindIndex = nextIndex(table.smBlindIndex);
 	}
 	
 	public void start() {
@@ -125,7 +134,7 @@ public class Game {
 	public boolean isOnlyOneAlive() {
 		int playerAlive = 0;
 		for(Player player : playerList) {
-			if(!player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[8])){
+			if(!player.getState().equals(Player.States.FOLD) && !player.getState().equals(Player.States.LOSE)){
 				playerAlive++;
 				if(playerAlive > 1){
 					return false;
@@ -138,8 +147,8 @@ public class Game {
 	public boolean isAllCall() {
 		
 		for(Player player : playerList) {
-			if((player.getState().equals(Player.STATES[0]))
-					|| (player.getActionChip() != state.getBetChip() && !player.getState().equals(Player.STATES[5]) && !player.getState().equals(Player.STATES[6]) &&  !player.getState().equals(Player.STATES[8]))){
+			if((player.getState().equals(Player.States.WAIT))
+					|| (player.getActionChip() != state.getBetChip() && !player.getState().equals(Player.States.FOLD) && !player.getState().equals(Player.States.ALL_IN) &&  !player.getState().equals(Player.States.LOSE))){
 				return false;
 			}
 		}
@@ -295,35 +304,52 @@ public class Game {
 		return card;
 	}
 	
-	/*
-	 * return a part of "your turn" message
+	/**
+	 * return action part of "your turn" message
+	 * @param playerIndex
+	 * @return
 	 */
 	public String getPlayerAvalableAction(int playerIndex) {
 		Player currentPlayer = playerList.get(playerIndex);
-		
-		//player's state is fold or all-in
-		if(currentPlayer.getState().equals(Player.STATES[6])
-				|| currentPlayer.getState().equals(Player.STATES[7])
-				|| 0 == currentPlayer.getChip()){
+
+		//player's state is fold or all-in or lose
+		if(currentPlayer.getState().equals(Player.States.ALL_IN)
+				|| currentPlayer.getState().equals(Player.States.CALL)
+				|| currentPlayer.getState().equals(Player.States.LOSE)){
 			return null;
 		}
 		//player's state is wait
-		if(currentPlayer.getState().equals(Player.STATES[0])){
+		if(currentPlayer.getState().equals(Player.States.WAIT)){
 			if(currentPlayer.getActionChip() == state.getBetChip()) {
+				if(state.getState().equals("preflop") 
+						&& playerIndex == nextIndex(table.smBlindIndex)) {
+					if(currentPlayer.getActionChip() == table.bBlind){
+						return "0 1 1 1 1 0";
+					}else {
+						return determinByChip(currentPlayer);
+					}
+				}
 				return "0 1 1 0 1 1";
-			}/*has enough chip*/else if(currentPlayer.getChip() >= state.getBetChip()-currentPlayer.getActionChip()){
-				return "1 1 0 1 1 0";
-			}/*not has enough chip*/else {
-				return "0 1 0 0 1 0";
+			}else{
+				return determinByChip(currentPlayer);
 			}
 		}
 		
-		if(currentPlayer.getChip() >= state.getBetChip()-currentPlayer.getActionChip()){
+		return determinByChip(currentPlayer);
+	}
+	
+	private String determinByChip(Player currentPlayer) {
+		if(currentPlayer.getChip() > state.getBetChip()-currentPlayer.getActionChip()){
 			return "1 1 0 1 1 0";
 		} else {
 			return "0 1 0 0 1 0";
 		}
 	}
+	
+	private int nextIndex(int currentIndex){
+		return (currentIndex + 1) % playerList.size();
+	}
+	
 	
 	/*
 	 *	player's action 
