@@ -188,4 +188,9 @@ public class Player {
 		
 		return builder.toString();
 	}
+
+	public String getPrintMsg() {
+		// TODO Auto-generated method stub
+		return getUpdateMassage();
+	}
 }

@@ -49,19 +49,30 @@ public abstract class BaseState {
 
 	public void playerAction(int startIndex) {
 		List<Player> playerList = game.getPlayerList();
+		
+		game.tableView.updateAllPlayer(playerList);
+		
 		for(int i = startIndex; !game.isOnlyOneAlive() && !game.isAllCall(); i = (i+1)%playerList.size()) {
 			Player player = playerList.get(i);
 //			MassageSender.updateView(playerList, game.getUpdateMassage(player));
 			MassageSender.updateView(player, game.getUpdateMassage(player));
+
+			game.tableView.setActingPlayer(playerList.indexOf(player));
+			game.tableView.updatePlayer(player, playerList.indexOf(player));
+			
 			String availableAction = game.getPlayerAvalableAction(i);
 			if(null == availableAction) {
 				continue;
 			}
 			game.printGameState();
+			
 			MassageSender.yourTurn(player, availableAction);
 			MassageDecoder.process(game, player);
+			
+			game.tableView.updatePlayer(player, playerList.indexOf(player));
 			game.printGameState();
 		}
+		
 		next();
 	}
 	

@@ -19,6 +19,8 @@ public class GameEndingState extends BaseState{
 		// TODO Auto-generated method stub
 		this.game.processResult();
 		
+		game.tableView.updateAllPlayer(game.getPlayerList());
+		
 		List<Player> playerList = this.game.getPlayerList();
 		StringBuffer sb = new StringBuffer();
 		for(Player player : playerList) {
@@ -36,6 +38,7 @@ public class GameEndingState extends BaseState{
 		if (this.game.isThereAWiner()){
 			this.game.endTable();
 			MassageSender.sayGoodbye(this.game.getPlayerList());
+
 		} else {
 			this.game.init();
 			this.game.setState(new PreFlopState(this.game));

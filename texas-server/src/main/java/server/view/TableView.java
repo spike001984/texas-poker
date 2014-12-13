@@ -3,6 +3,7 @@ package server.view;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -89,7 +90,7 @@ public class TableView {
 		playerArea.get(index).setText(text);
 	}
 	
-	public void updateAllPlayer(ArrayList<Player> players) {
+	public void updateAllPlayer(List<Player> players) {
 		if (players.size() != playerNum) {
 			System.err.println("Update all player failed. Size unfit!");
 			return;

@@ -23,7 +23,7 @@ public class Deck {
 	private void init() {
 		for(int suit = 0; suit < 4; suit++){
 			for(int point = 0; point < 13; point++){
-				cards.add(new Card(Deck.SUITS[0], point+2));
+				cards.add(new Card(Deck.SUITS[suit], point+2));
 			}
 		}		
 	}
@@ -47,13 +47,13 @@ public class Deck {
 		return cards.remove(cards.size()-1);
 	}	
 	
-//	public static void main(String[] args) {
-//		Deck deck = Deck.getDeckInstance();
-//		for(int i = 0; i < 10; i++){
-//			deck.printDeck();
-//			System.out.println("-->deal:" + deck.deal());
-//			deck.printDeck();
-//			System.out.println("");
-//		}
-//	}
+	public static void main(String[] args) {
+		Deck deck = Deck.getDeckInstance();
+		for(int i = 0; i < 10; i++){
+			deck.printDeck();
+			System.out.println("-->deal:" + deck.deal());
+			deck.printDeck();
+			System.out.println("");
+		}
+	}
 }

@@ -17,14 +17,9 @@ public class PreFlopState extends BaseState{
 	public void beforePlayerAction() {
 		// TODO Auto-generated method stub
 		game.initPlayersState();
-		initChip();
 		setBlinds();
 		dealCards();
 		game.initBlinds();
-	}
-	
-	private void initChip(){
-		MassageSender.init(game.getPlayerList(), 200);
 	}
 	
 	private void setBlinds(){
