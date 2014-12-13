@@ -17,7 +17,12 @@ public class GameEndingState extends BaseState{
 	@Override
 	public void action() {
 		// TODO Auto-generated method stub
-		this.game.processResult();
+		if(game.isOnlyOneAlive()){
+			Player player = game.getAlive();
+			player.setChip(getBetChip() + game.getPot());
+		}else{
+			this.game.processResult();
+		}
 		
 		game.tableView.updateAllPlayer(game.getPlayerList());
 		

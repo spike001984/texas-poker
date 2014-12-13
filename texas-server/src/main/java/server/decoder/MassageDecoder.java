@@ -20,6 +20,7 @@ public class MassageDecoder {
 	}
 	
 	private static void decode(Game game, String msg, Player player) {
+		System.out.println("Message: " + msg);
 		String[] msgArr = msg.split(" ");
 
 		String commond = msgArr[0];

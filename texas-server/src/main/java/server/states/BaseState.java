@@ -64,13 +64,22 @@ public abstract class BaseState {
 			if(null == availableAction) {
 				continue;
 			}
-			game.printGameState();
+//			game.printGameState();
 			
 			MassageSender.yourTurn(player, availableAction);
 			MassageDecoder.process(game, player);
 			
 			game.tableView.updatePlayer(player, playerList.indexOf(player));
-			game.printGameState();
+			System.out.println(availableAction);
+			System.out.println(player.getPrintMsg());
+//			game.printGameState();
+			
+			try {
+				Thread.sleep(5 * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		next();

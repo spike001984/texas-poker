@@ -178,14 +178,15 @@ public class Player {
 	public String getUpdateMassage() {
 		StringBuilder builder = new StringBuilder();
 		if (socket != null) {
-			builder.append(socket.getPort()+",");
+			builder.append("ID: " + socket.getPort()+"\n");
 		}
+		builder.append("chip: " + this.chip+"\n");
+		builder.append("actionChip: " + actionChip+"\n");
+		builder.append("totalIn: " + this.totalIn + "\n");
+		builder.append("finalCards: " + finalCard+"\n");
 		
-		builder.append(this.chip+",");
-		builder.append(this.state+",");
-		builder.append(this.actionChip+",");
-		builder.append(this.totalIn);
-		
+		builder.append("hand: " + this.cards.toString()+"\n");
+		builder.append("state: " + this.state+"\n");
 		return builder.toString();
 	}
 

@@ -28,7 +28,7 @@ public class Table {
 	}
 	
 	public void initTable() {
-		
+		game.initChip();
 	}
 	
 	public void addPlayer(Player player) {
@@ -38,6 +38,7 @@ public class Table {
 	public void startGame() {
 		this.game = new Game(this);
 		game.init();
+		initTable();
 		game.start();
 	}
 	

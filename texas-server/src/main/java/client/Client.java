@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import server.Game;
 
@@ -68,7 +70,8 @@ public class Client {
 					str = br.readLine();
 					if(str != null){
 						System.out.println(str);
-						ai_response(str);
+						if(str.startsWith("yt"))
+							ai_response(str);
 					}else {
 						break;
 					}
@@ -89,25 +92,23 @@ public class Client {
 	
 	private void ai_response(String str) {
 		// TODO Auto-generated method stub
-		String res = ai_simple_response(str);
+		String res = ai_simple_response(str.substring(3));
 		try {
 			PrintWriter pw = getWriter(socket);
 			pw.println(res);
 			
 		}catch(IOException e) {
 			e.printStackTrace();
-		}finally{
-			try{
-				socket.close();
-			}catch(IOException e){
-				e.printStackTrace();
-			}
 		}
 	}
 	
 	private static String ai_simple_response(String input) {
 		int rand = 0;
 		String[] avaActionStr = input.split(" ");
+		for(int i = 0; i < avaActionStr.length; i++) {
+			System.out.print(avaActionStr[i]+ " ");
+		}
+		System.out.println("\n");
 		
 		do {
 			rand = (int) (Math.random() * 6);
@@ -116,7 +117,7 @@ public class Client {
 		String response = Game.actionIndex[rand];
 		
 		//Bet and raise need argument.
-		if (rand == 1 || rand == 3) {
+		if (rand == 5 || rand == 3) {
 			response += " 6";
 		}
 		return response;
@@ -153,7 +154,7 @@ public class Client {
 	
 	public static void main(String[] args){
 		// TODO Auto-generated method stub
-		/*Client client = null;
+		Client client = null;
 		
 		try{
 			client = new Client();
@@ -176,11 +177,11 @@ public class Client {
 			e.printStackTrace();
 		}
 		System.out.println("end");
-		System.exit(0);*/
+		System.exit(0);
 		
-		String res = ai_simple_response("0 1 1 1 1 1");
+//		String res = ai_simple_response("0 1 1 1 1 1");
 		
-		System.out.println(res);
+//		System.out.println(res);
 	}
 	
 	

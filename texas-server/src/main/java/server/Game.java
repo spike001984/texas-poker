@@ -15,16 +15,16 @@ public class Game {
 //	public static String[] PLAYER_ACTIONS = {"check", "bet", "call", "raise", "all-in", "fold"};
 	
 	public static class PlayerActions {
-		public static String CHECK = "check";	//0
-		public static String BET = "bet";	//1
-		public static String CALL = "call";	//2
+		public static String CHECK = "call";	//0
+		public static String BET = "fold";	//1
+		public static String CALL = "check";	//2
 		public static String RAISE = "raise";	//3
 		public static String ALL_IN = "all-in";	//4
-		public static String FOLD = "fold";	//5
+		public static String FOLD = "bet";	//5
 	}
 	
 	public static final String[] actionIndex = {
-		"check", "bet", "call", "raise", "all-in", "fold"
+		"call", "fold", "check", "raise", "all-in", "bet"
 	};
 	private int pot;
 	private Table table;
@@ -104,7 +104,11 @@ public class Game {
 		this.pot = 0;
 		this.deck = Deck.getDeckInstance();
 		this.boardCards.clear();
-		initChip();
+
+		for(Player player : playerList){
+			player.getCards().clear();
+			player.setTotalIn(0);
+		}
 	}
 	
 	public void initPlayersState(){
@@ -142,7 +146,7 @@ public class Game {
 		}
 	}
 	
-	private void initChip(){
+	void initChip(){
 		MassageSender.init(getPlayerList(), 200);
 	}
 	
@@ -157,6 +161,15 @@ public class Game {
 			}
 		}
 		return true;
+	}
+	
+	public Player getAlive(){
+		for(Player player : playerList) {
+			if(!player.getState().equals(Player.States.FOLD) && !player.getState().equals(Player.States.LOSE)){
+				return player;
+			}
+		}
+		return null;
 	}
 	
 	public boolean isAllCall() {
