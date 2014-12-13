@@ -69,7 +69,7 @@ public class Client {
 				while(true) {
 					str = br.readLine();
 					if(str != null){
-						System.out.println(str);
+						System.out.println("From server: " + str);
 						if(str.startsWith("yt"))
 							ai_response(str);
 					}else {
@@ -94,6 +94,7 @@ public class Client {
 		// TODO Auto-generated method stub
 		String res = ai_simple_response(str.substring(3));
 		try {
+			System.out.println("To server: " + res);
 			PrintWriter pw = getWriter(socket);
 			pw.println(res);
 			
@@ -112,13 +113,13 @@ public class Client {
 		
 		do {
 			rand = (int) (Math.random() * 6);
-		} while (0 == Integer.parseInt(avaActionStr[rand]));
+		} while (0 == Integer.parseInt(avaActionStr[rand]) || 4 == rand || 1 == rand);
 		
 		String response = Game.actionIndex[rand];
 		
 		//Bet and raise need argument.
 		if (rand == 5 || rand == 3) {
-			response += " 6";
+			response += " 10";
 		}
 		return response;
 	}

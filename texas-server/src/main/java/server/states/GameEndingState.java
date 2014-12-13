@@ -19,7 +19,7 @@ public class GameEndingState extends BaseState{
 		// TODO Auto-generated method stub
 		if(game.isOnlyOneAlive()){
 			Player player = game.getAlive();
-			player.setChip(getBetChip() + game.getPot());
+			player.setChip(player.getChip() + game.getPot());
 		}else{
 			this.game.processResult();
 		}

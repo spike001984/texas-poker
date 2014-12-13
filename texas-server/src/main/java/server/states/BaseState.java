@@ -51,6 +51,7 @@ public abstract class BaseState {
 		List<Player> playerList = game.getPlayerList();
 		
 		game.tableView.updateAllPlayer(playerList);
+		game.tableView.appendLog(game.getBoardCards().toString());
 		
 		for(int i = startIndex; !game.isOnlyOneAlive() && !game.isAllCall(); i = (i+1)%playerList.size()) {
 			Player player = playerList.get(i);
@@ -74,12 +75,12 @@ public abstract class BaseState {
 			System.out.println(player.getPrintMsg());
 //			game.printGameState();
 			
-			try {
-				Thread.sleep(5 * 1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(5 * 1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		
 		next();

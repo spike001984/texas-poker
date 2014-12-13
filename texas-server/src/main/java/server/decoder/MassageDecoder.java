@@ -13,6 +13,7 @@ public class MassageDecoder {
 		try{
 			br = IOHelper.getReader(player.getSocket());
 			String msg = br.readLine();
+			game.tableView.appendLog(player.getSocket().getPort() + ": " + msg);
 			decode(game, msg, player);
 		}catch(Exception e){
 			e.printStackTrace();
