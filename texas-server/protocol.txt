@@ -1,42 +1,58 @@
-鍗忚涓殑鎵�鏈塵essage閮芥槸浠ョ┖鏍煎垎闅旂殑瀛楃涓�
+Protocol between client and server. All messages are shown in the following
+format:
 
-Server massage:
-state鍖呭惈锛歸ait fold check all-in bet raise reraise
-	initchip锛氬垵濮嬬帺瀹剁鐮�
+	message_name: explanation
+		message_header arg0[, subarg, ...] arg1[, subarg, ...] ...
+		--arg0 explanation of arg0
+		--arg1 explanation of arg1
+		...
+
+Server message:
+	init message: Initial message for client.
 		init allchip smblind bigblind ante pid0,pi1,pi2... self_pid
-		--
+		--allchip Player's buy-in chip
+		--smblind the number of small blind.
+		--bigblind the number of big blind.
+		--ante the number of ante
+		--pid0,pid1,... Pids of all players. Shuffled in server and sorted as they seated.
+		--self_pid Player's pid of himself. Using socket port number.
 	
-	deal card:
-		deal playerport card card sbindex bbindex
+	deal card: Deal cards to a player
+		deal playerport card card sbindex
+		--playerport The port number of which the cards are sent.
+		--card first card
+		--card second card
+		--sbindex index of small blind.
 	
-	update view:鍙戦�佺墝灞�褰撳墠鐘舵��
+	update view: Most important. Game state for client to know when he has to take action.
 		uv poketnumber pot gamestate com_card,com_card,... player,chip,state,number ...
-		--poketnumber 鐜╁涓暟
-		--pot 搴曟睜澶у皬
-		--gamestate:preflop锛宖lop锛宼urn锛宺iver锛宎fterriver
-		--player,chip,state,number 鐜╁锛岀鐮侊紝鐘舵�侊紝涓嬫敞绛圭爜
+		--poketnumber Number of players. Not useful anymore.
+		--pot Chip amount in the pot.
+		--gamestate preflop, flop, turn, river
+		--player,chip,state,number All players' status.
+		--state wait fold check all-in bet raise reraise. in string
 		
-	your turn: 琛ㄧず杞埌璇ョ帺瀹惰鍔�
-		yt action action
-		--action: call fold check raise all-in bet
+		
+	your turn: Tell client when a player has to take action.
+		yt available_action
+		--available_action: call fold check raise all-in bet
 		
 	end: 缁撴潫鐜╁娓告垙
 		end msg
 		--msg 缁撴潫淇℃伅
-	鍏朵綑鍥炲鐨勪俊鎭负client鐨勬寚浠ゅ姞鍚庣紑鈥�-r鈥欑┖鏍肩姸鎬佺爜锛氬call-r 0 msg,0琛ㄧず姝ｅ父锛�1琛ㄧず寮傚父锛屽彧鏈�1鍚庨潰浼氬姞msg
-
+		
 Client massage:
-	bet锛�
+	bet
 		bet n
-		--n 涓嬫敞澶у皬
+		--n Chip to bet.
 	raise:
 		raise n
-		--n 涓烘渶鍚庡ぇ灏�
-	call锛�
+		--n Chip to raise.
+	call
 		call
-	check锛�
+	check
 		check
-	all-in锛�
+	all-in
 		all-in
 	fold:
 		fold
