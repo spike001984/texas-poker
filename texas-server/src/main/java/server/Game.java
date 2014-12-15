@@ -26,6 +26,7 @@ public class Game {
 	public static final String[] actionIndex = {
 		"call", "fold", "check", "raise", "all-in", "bet"
 	};
+	
 	private int pot;
 	private Table table;
 	
@@ -147,7 +148,34 @@ public class Game {
 	}
 	
 	void initChip(){
-		MassageSender.init(getPlayerList(), 200);
+		prepareInitMsg();
+		MassageSender.init(getPlayerList(), Table.inChip);
+	}
+	
+	/**
+	 * Prepare initial messages in form of:
+	 * init allchip smblind bigblind ante pid0,pi1,pi2... self_pid
+	 * Stored in Player object.
+	 * @return
+	 */
+	private void prepareInitMsg() {
+		StringBuffer pids = new StringBuffer();
+		
+		List<Player> players = getPlayerList();
+		
+		for (Player p : players) {
+			pids.append(p.getPid());
+			pids.append(",");
+		}
+		
+		//Remove the last ','
+		pids.deleteCharAt(pids.length() - 1);
+		String initMsgStub = "init " + Table.inChip + " " + Table.smBlind + " " +
+				Table.bBlind + " " + Table.ante + " " + pids + " ";
+		
+		for (Player p : players) {
+			p.setInitMsg(initMsgStub + p.getPid());
+		}
 	}
 	
 	public boolean isOnlyOneAlive() {
@@ -350,7 +378,7 @@ public class Game {
 		//preflop && bb
 		if(state.getState().equals("preflop")
 				&& playerIndex == nextIndex(table.smBlindIndex)) {
-			if(getState().getBetChip() == table.bBlind){
+			if(getState().getBetChip() == Table.bBlind){
 					return "0 1 1 1 1 0";
 			}
 		}

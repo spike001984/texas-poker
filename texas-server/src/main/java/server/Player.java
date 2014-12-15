@@ -26,6 +26,9 @@ public class Player {
 	private Socket socket;
 	private int actionChip;
 	private int totalIn;
+
+	private List<Card> cards;
+	private String initMsg;
 	
 	/**
 	 * For result calculating.
@@ -41,8 +44,6 @@ public class Player {
 		this.finalCard = finalCard;
 	}
 
-	private List<Card> cards;
-	
 	public Player(int chip, Socket socket) {
 		this.chip = chip;
 		this.socket = socket;
@@ -175,7 +176,19 @@ public class Player {
 		return number;
 	}
 	
+	/**
+	 * This message is sent to client in format:
+	 * pid,total_chip,state,action_chip
+	 * @return
+	 */
 	public String getUpdateMassage() {
+		String msg = getPid() + "," + getChip() + "," + getState() + ","
+				+ getActionChip();
+		return msg;
+	}
+
+	public String getPrintMsg() {
+		// TODO Auto-generated method stub
 		StringBuilder builder = new StringBuilder();
 		if (socket != null) {
 			builder.append("ID: " + socket.getPort()+"\n");
@@ -189,9 +202,17 @@ public class Player {
 		builder.append("state: " + this.state+"\n");
 		return builder.toString();
 	}
-
-	public String getPrintMsg() {
-		// TODO Auto-generated method stub
-		return getUpdateMassage();
+	
+	public int getPid() {
+		return getSocket().getPort();
 	}
+
+	public String getInitMsg() {
+		return initMsg;
+	}
+
+	public void setInitMsg(String initMsg) {
+		this.initMsg = initMsg;
+	}
+
 }

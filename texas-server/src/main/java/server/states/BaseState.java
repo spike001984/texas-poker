@@ -75,12 +75,12 @@ public abstract class BaseState {
 			System.out.println(player.getPrintMsg());
 //			game.printGameState();
 			
-//			try {
-//				Thread.sleep(5 * 1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			try {
+				Thread.sleep(10 * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		next();
