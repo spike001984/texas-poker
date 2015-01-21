@@ -25,7 +25,7 @@ Server message:
 		--sbindex index of small blind.
 	
 	update view: Most important. Game state for client to know when he has to take action.
-		uv poketnumber pot gamestate com_card,com_card,... player,chip,state,number ...
+		uv poketnumber pot gamestate com_card,com_card,...  pid,total_chip,state,action_chip ...
 		--poketnumber Number of players. Not useful anymore.
 		--pot Chip amount in the pot.
 		--gamestate preflop, flop, turn, river

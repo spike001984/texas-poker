@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import client.lib.AbstractGame;
 import server.Game;
 
 public class Client {
@@ -21,6 +22,8 @@ public class Client {
 	private static Thread talkThread;
 	
 	BufferedReader lb = null;
+	
+	//private AbstractGame game = new UserToComplet();
 	
 	public Client() throws IOException {
 		socket = new Socket(host,port);
@@ -63,31 +66,31 @@ public class Client {
 	
 	public void echo() {
 		BufferedReader br = null;
-			try {
-				br = getReader(socket);
-				String str = null;
-				while(true) {
-					str = br.readLine();
-					if(str != null){
-						System.out.println("From server: " + str);
-						if(str.startsWith("yt"))
-							ai_response(str);
-					}else {
-						break;
-					}
+		try {
+			br = getReader(socket);
+			String str = null;
+			while (true) {
+				str = br.readLine();
+				if (str != null) {
+					System.out.println("From server: " + str);
+					if (str.startsWith("yt"))
+						ai_response(str);
+				} else {
+					break;
 				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+				socket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} finally {
-				try {
-					br.close();
-					socket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
+		}
 	}
 	
 	private void ai_response(String str) {

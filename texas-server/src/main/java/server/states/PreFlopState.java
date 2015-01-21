@@ -4,6 +4,7 @@ import java.util.List;
 
 import server.Game;
 import server.Player;
+import server.Table;
 import server.sender.MassageSender;
 
 public class PreFlopState extends BaseState{
@@ -45,7 +46,7 @@ public class PreFlopState extends BaseState{
 	public void deal2player(Player player) {
 		this.game.deal2player(player);
 		this.game.deal2player(player);
-		MassageSender.deal(player);
+		MassageSender.deal(player, game.getTable().smBlindIndex);
 	}
 
 	@Override

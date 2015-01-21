@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-	public int smBlind = 1;
-	public int bBlind = 2;
-	public int inChip = 200;
-	public int seatNumber = 2;
+	public static int ante = 0;
+	public static int smBlind = 1;
+	public static int bBlind = 2;
+	public static int inChip = 200;
+	public static int seatNumber = 2;
 	
 	public int smBlindIndex = 0;
 	private static Table table = null;
