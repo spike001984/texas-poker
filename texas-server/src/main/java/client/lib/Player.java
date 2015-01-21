@@ -1,10 +1,22 @@
 package client.lib;
 
 public class Player {
+	private int id;
 	private int chip;
 	private int actionChip;
 	private String state;
 	
+	public Player(int id, int chip) {
+		this.id = id;
+		this.chip = chip;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getChip() {
 		return chip;
 	}
